@@ -36,8 +36,8 @@ ap = argparse.ArgumentParser()
 # video optional
 ap.add_argument("-v", "--video", help="path to the video file")
 
-# TODO make sure the default minimum size is correct
-ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
+
+ap.add_argument("-a", "--min-area", type=int, default=300, help="minimum area size")
 args = vars(ap.parse_args())
 
 # if the video argument is None, then we are reading from webcam
@@ -56,7 +56,10 @@ while True:
     if frame is None:
         break
     
-    frame = imutils.resize(frame, width=500)
+    # the performance of the object detection is related with the frame size set by the opencv model.
+    # Decreasing frame size is saving the computation, thus having better performance in better detecting speed.
+    # after tuning parameters, 300 seems to have the best performance
+    frame = imutils.resize(frame, width=300)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (21, 21), 0)
     
