@@ -9,6 +9,7 @@ from imutils.video import VideoStream
 import argparse
 import imutils
 import cv2
+from imutils.video import FPS
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -26,6 +27,7 @@ trackers = {
 
 tracker = trackers[args["tracker"]]()
 
+fps = None
 
 # initialize bounding box
 initBB = None
@@ -50,7 +52,11 @@ while True:
             (x, y, w, h) = [int(v) for v in box]
             cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 2)
             
-        info = [("Success", "Yes" if success else "No")]
+#        fps.update()
+#        fps.stop()
+            
+        info = [("Success", "Yes" if success else "No"),
+                ("FPS", "{:.2f}".format(fps.fps()))]
         
         for (i, (k,v)) in enumerate(info):
             text = "{}: {}".format(k,v)
@@ -62,6 +68,7 @@ while True:
     if key == ord("s"):
         initBB = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
         tracker.init(frame, initBB)
+        fps = FPS().start()
         
     elif key == ord("q"):
         break
@@ -72,6 +79,6 @@ else:
     vs.release()
     
 cv2.destroyAllWindows()
-cv2.waitKey(1)
+cv2.waitKey()
             
             
