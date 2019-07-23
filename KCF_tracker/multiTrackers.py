@@ -10,6 +10,7 @@ import argparse
 import imutils
 import cv2
 from imutils.video import FPS
+from random import randint
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -31,6 +32,7 @@ fps = None
 
 # initialize bounding box
 initBB = None
+#colors = []
 
 vs = cv2.VideoCapture(args["video"])
 
@@ -52,8 +54,8 @@ while True:
             (x, y, w, h) = [int(v) for v in box]
             cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 2)
             
-#        fps.update()
-#        fps.stop()
+        fps.update()
+        fps.stop()
             
         info = [("Success", "Yes" if success else "No"),
                 ("FPS", "{:.2f}".format(fps.fps()))]
@@ -67,6 +69,8 @@ while True:
     
     if key == ord("s"):
         initBB = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+#        initBB.append(cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True))
+#        colors.append((randint(64, 255), randint(64, 255), randint(64, 255)))
         tracker.init(frame, initBB)
         fps = FPS().start()
         
@@ -79,6 +83,6 @@ else:
     vs.release()
     
 cv2.destroyAllWindows()
-cv2.waitKey()
+cv2.waitKey(1)
             
             
