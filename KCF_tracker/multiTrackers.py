@@ -34,7 +34,7 @@ trackers = {
             "mil": cv2.TrackerMIL_create
         }
 
-tracker = trackers[args["tracker"]]()
+#tracker = trackers[args["tracker"]]()
 
 fps = None
 
@@ -56,12 +56,12 @@ while True:
     (H, W) = frame.shape[:2]
 
     if bboxes != []:
-        if len(bboxes) == 1:
-            (success, boxes) = tracker.update(frame)
-            if success:
-                (x, y, w, h) = [int(v) for v in boxes]
-                cv2.rectangle(frame, (x,y), (x+w,y+h), colors[0], 2)
-        else:
+        if len(bboxes) >= 1:
+#            (success, boxes) = tracker.update(frame)
+#            if success:
+#                (x, y, w, h) = [int(v) for v in boxes]
+#                cv2.rectangle(frame, (x,y), (x+w,y+h), colors[0], 2)
+#        else:
             (success, boxes) = multiTracker.update(frame)
             if success:
                 for i, box in enumerate(boxes):
@@ -76,8 +76,8 @@ while True:
         bboxes.append(bb)
         color = (randint(64, 255), randint(64, 255), randint(64, 255))
         colors.append(color)
-        multiTracker.add(cv2.TrackerKCF_create(), frame, bb)
-        tracker.init(frame, bb)
+        multiTracker.add(trackers[args["tracker"]](), frame, bb)
+#        tracker.init(frame, bb)
         fps = FPS().start()
         
     elif key == ord("q"):
