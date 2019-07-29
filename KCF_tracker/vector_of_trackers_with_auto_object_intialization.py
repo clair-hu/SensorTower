@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jul 26 10:52:32 2019
+Created on Mon Jul 29 15:12:20 2019
 
 @author: clair
 """
+
 
 from imutils.video import VideoStream
 import argparse
@@ -22,17 +23,13 @@ ap.add_argument("-t", "--tracker", type=str, default="kcf",
 ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
 args = vars(ap.parse_args())
 
-
+vector_tracker = []
 
 trackers = {
             "kcf": cv2.TrackerKCF_create,
             "boosting": cv2.TrackerBoosting_create,
             "mil": cv2.TrackerMIL_create
         }
-
-#def isHittingBoundary(x, y, w, h, width, height):
-#    
-#    if x < 5 or y < 5 or (x+w) > 
         
 
 def isInBboxes(x, y, w, h, bboxes):
@@ -47,7 +44,7 @@ def isInBboxes(x, y, w, h, bboxes):
 
 bboxes = []
 colors = []
-multiTracker = cv2.MultiTracker_create()
+#multiTracker = cv2.MultiTracker_create()
 
 vs = cv2.VideoCapture(args["video"])
 firstFrame = None
@@ -87,7 +84,7 @@ while True:
     currTime = time.time()
     deltaTime = currTime - startTime
     
-    if hasBounded == False and deltaTime >= 0.2:
+    if (len(bboxes) < 1 and deltaTime >= 0.1) or deltaTime > 5:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, (21, 21), 0)
         
@@ -109,16 +106,21 @@ while True:
                 continue
             
             (x, y, w, h) = cv2.boundingRect(c)
-            if isInBboxes(x,y,w,h,bboxes):
-                continue
+#            if isInBboxes(x,y,w,h,bboxes):
+#                continue
             bb = (x, y, w, h)
+            if bb in bboxes:
+                continue
             print(bb)
             bboxes.append(bb)
             color = (randint(64, 255), randint(64, 255), randint(64, 255))
             colors.append(color)
-            multiTracker.add(trackers[args["tracker"]](), frame, bb)
-        if len(bboxes) >= 1:
-            hasBounded = True
+            vector_tracker.append(trackers[args["tracker"]]())
+            vector_tracker[-1].init(frame, bb)
+            startTime = time.time()
+#            multiTracker.add(trackers[args["tracker"]](), frame, bb)
+#        if len(bboxes) >= 1:
+#            hasBounded = True
 #            multiTracker.add(trackers[args["tracker"]](), frame, bb)
     
     
@@ -126,21 +128,28 @@ while True:
 
     if bboxes != []:
         if len(bboxes) >= 1:
-            (success, boxes) = multiTracker.update(frame)
-            if success:
-                print("AFTER SUCCESS")
-                for i, box in enumerate(boxes):
+            for i, bb in enumerate(bboxes):
+                (success, box) = vector_tracker[i].update(frame)
+                if success:
+                    print(i)
+                    print("success")
                     (x, y, w, h) = [int(v) for v in box]
-                    print(i, end=" ")
-                    print((x, y, w, h))
                     cv2.rectangle(frame, (x,y), (x+w,y+h), colors[i], 2)
-            else:
-                print("FAILEDDDDDDDDDDDD")
-                startTime = time.time()
-                hasBounded = False
-                bboxes = []
-                colors = []
-                multiTracker = cv2.MultiTracker_create()
+#            if success:
+#                print("AFTER SUCCESS")
+#                for i, box in enumerate(boxes):
+#                    (x, y, w, h) = [int(v) for v in box]
+#                    print(i, end=" ")
+#                    print((x, y, w, h))
+#                    cv2.rectangle(frame, (x,y), (x+w,y+h), colors[i], 2)
+                else:
+                    print("FAILEDDDDDDDDDDDD")
+                    vector_tracker.pop(i)
+                    bboxes.pop(i)
+                    colors.pop(i)
+                    startTime = time.time()
+#                    hasBounded = False
+                    
                 
                 
                 
@@ -153,7 +162,9 @@ while True:
         bboxes.append(bb)
         color = (randint(64, 255), randint(64, 255), randint(64, 255))
         colors.append(color)
-        multiTracker.add(trackers[args["tracker"]](), frame, bb)
+        vector_tracker.append(trackers[args["tracker"]]())
+        vector_tracker[-1].init(frame,bb)
+#        multiTracker.add(trackers[args["tracker"]](), frame, bb)
         
     elif key == ord("q"):
         break
