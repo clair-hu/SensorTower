@@ -44,16 +44,10 @@ def isInBboxes(x, y, w, h, bboxes):
 
 bboxes = []
 colors = []
-#multiTracker = cv2.MultiTracker_create()
 
 vs = cv2.VideoCapture(args["video"])
 firstFrame = None
 startTime = time.time()
-hasBounded = False
-
-#video_width = vs.get(3)
-#video_height = vs.get(4)
-
 
 while True:
     frame = vs.read()
@@ -65,21 +59,7 @@ while True:
     
     #resize frame
     frame = imutils.resize(frame, width=500)
-#    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-#    gray = cv2.GaussianBlur(gray, (21, 21), 0)
-#    
-#    if firstFrame is None:
-#        firstFrame = gray
-#        continue
-#
-#    frameDelta = cv2.absdiff(firstFrame, gray)
-#    thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
-#    
-#    thresh = cv2.dilate(thresh, None, iterations=2)
-#    # find contours on the thresholded image
-#    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-#    cnts = imutils.grab_contours(cnts)
-    
+
     # loop over the contours
     currTime = time.time()
     deltaTime = currTime - startTime
@@ -106,11 +86,11 @@ while True:
                 continue
             
             (x, y, w, h) = cv2.boundingRect(c)
-#            if isInBboxes(x,y,w,h,bboxes):
-#                continue
-            bb = (x, y, w, h)
-            if bb in bboxes:
+            if isInBboxes(x,y,w,h,bboxes):
                 continue
+            bb = (x, y, w, h)
+#            if bb in bboxes:
+#                continue
             print(bb)
             bboxes.append(bb)
             color = (randint(64, 255), randint(64, 255), randint(64, 255))
@@ -118,11 +98,6 @@ while True:
             vector_tracker.append(trackers[args["tracker"]]())
             vector_tracker[-1].init(frame, bb)
             startTime = time.time()
-#            multiTracker.add(trackers[args["tracker"]](), frame, bb)
-#        if len(bboxes) >= 1:
-#            hasBounded = True
-#            multiTracker.add(trackers[args["tracker"]](), frame, bb)
-    
     
     (H, W) = frame.shape[:2]
 
@@ -135,20 +110,13 @@ while True:
                     print("success")
                     (x, y, w, h) = [int(v) for v in box]
                     cv2.rectangle(frame, (x,y), (x+w,y+h), colors[i], 2)
-#            if success:
-#                print("AFTER SUCCESS")
-#                for i, box in enumerate(boxes):
-#                    (x, y, w, h) = [int(v) for v in box]
-#                    print(i, end=" ")
-#                    print((x, y, w, h))
-#                    cv2.rectangle(frame, (x,y), (x+w,y+h), colors[i], 2)
                 else:
                     print("FAILEDDDDDDDDDDDD")
                     vector_tracker.pop(i)
                     bboxes.pop(i)
                     colors.pop(i)
                     startTime = time.time()
-#                    hasBounded = False
+#                    firstFrame = None
                     
                 
                 
@@ -164,12 +132,9 @@ while True:
         colors.append(color)
         vector_tracker.append(trackers[args["tracker"]]())
         vector_tracker[-1].init(frame,bb)
-#        multiTracker.add(trackers[args["tracker"]](), frame, bb)
         
     elif key == ord("q"):
         break
-    
-
     
     
 if not args.get("video", False):
