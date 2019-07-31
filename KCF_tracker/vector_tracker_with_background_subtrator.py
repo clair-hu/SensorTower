@@ -22,8 +22,9 @@ ap.add_argument("-t", "--tracker", type=str, default="kcf",
 	help="OpenCV object tracker type")
 ap.add_argument("-s", "--subtractor", type=str, default="mog",
     help="background subtractor to apply on the video")
+ap.add_argument("-a", "--min-area", type=int, default=300, 
+    help="minimum area size")
 
-ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
 args = vars(ap.parse_args())
 
 vector_tracker = []
@@ -75,47 +76,11 @@ while True:
     # loop over the contours
     currTime = time.time()
     deltaTime = currTime - startTime
-    
-#    if (len(bboxes) < 1 and deltaTime >= 0.1) or deltaTime > 5:
-#        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-#        gray = cv2.GaussianBlur(gray, (21, 21), 0)
-#        
-#        if firstFrame is None:
-#            firstFrame = gray
-#            continue
-#    
-#        frameDelta = cv2.absdiff(firstFrame, gray)
-#        thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
-#        
-#        thresh = cv2.dilate(thresh, None, iterations=2)
-#        
-#        cv2.imshow("gray", gray)
-#        cv2.imshow("thresh", thresh)
-#        
-#        # find contours on the thresholded image
-#        cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-#        cnts = imutils.grab_contours(cnts)
-#        
-#        for c in cnts:
-#            
-#            if cv2.contourArea(c) < args["min_area"]:
-#                continue
-#            
-#            (x, y, w, h) = cv2.boundingRect(c)
-#            if isInBboxes(x,y,w,h,bboxes):
-#                continue
-#            bb = (x, y, w, h)
-##            if bb in bboxes:
-##                continue
-#            print(bb)
-#            bboxes.append(bb)
-#            color = (randint(64, 255), randint(64, 255), randint(64, 255))
-#            colors.append(color)
-#            vector_tracker.append(trackers[args["tracker"]]())
-#            vector_tracker[-1].init(frame, bb)
-#            startTime = time.time()
-    
+
     if (len(bboxes) < 1 and deltaTime >= 0.1) or deltaTime > 5:
+
+        
+        # for comparison with gray and thresh frame
 #        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 #        gray = cv2.GaussianBlur(gray, (21, 21), 0)
 #        
@@ -163,8 +128,6 @@ while True:
             if isInBboxes(x,y,w,h,bboxes):
                 continue
             
-            if isInBboxes(x, y, w, h, bboxes):
-                continue
             bb = (x, y, w, h)
             print(bb)
             bboxes.append(bb)
@@ -197,7 +160,6 @@ while True:
                 
                 
     cv2.imshow("Frame", frame)
-#    cv2.imshow("background", fgmask)
     key = cv2.waitKey(1) & 0xFF
     
     if key == ord("s"):
