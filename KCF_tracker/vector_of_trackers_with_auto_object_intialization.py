@@ -20,7 +20,8 @@ ap.add_argument("-v", "--video", type=str,
 	help="path to input video file")
 ap.add_argument("-t", "--tracker", type=str, default="kcf",
 	help="OpenCV object tracker type")
-ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
+ap.add_argument("-a", "--min-area", type=int, default=300, 
+    help="minimum area size")
 args = vars(ap.parse_args())
 
 vector_tracker = []
@@ -89,8 +90,8 @@ while True:
             if isInBboxes(x,y,w,h,bboxes):
                 continue
             bb = (x, y, w, h)
-#            if bb in bboxes:
-#                continue
+            if bb in bboxes:
+                continue
             print(bb)
             bboxes.append(bb)
             color = (randint(64, 255), randint(64, 255), randint(64, 255))
