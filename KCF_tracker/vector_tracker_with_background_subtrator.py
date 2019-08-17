@@ -97,8 +97,12 @@ while True:
 #        cv2.imshow("thresh", thresh)
         
         fgmask = fgbg.apply(frame)
-        
-            
+#        print("---------")
+#        print(frame.shape)
+#        print(fgmask.shape)
+#        print("---------")
+#        background = cv2.absdiff(frame, fgmask)
+#        cv2.imshow("background", background) 
         if firstFrame is None:
             firstFrame = fgmask
             continue
@@ -112,7 +116,7 @@ while True:
             fgmaskthresh = fgmask
 
 #        cv2.imshow("background", fgmask)
-#        cv2.imshow("backgroundthresh", fgmaskthresh)
+        cv2.imshow("fgmask", fgmaskthresh)
         
         
         # find contours on the thresholded image
@@ -139,21 +143,21 @@ while True:
     
     (H, W) = frame.shape[:2]
 
-    if bboxes != []:
-        if len(bboxes) >= 1:
-            for i, bb in enumerate(bboxes):
-                (success, box) = vector_tracker[i].update(frame)
-                if success:
-                    print(i)
-                    print("success")
-                    (x, y, w, h) = [int(v) for v in box]
-                    cv2.rectangle(frame, (x,y), (x+w,y+h), colors[i], 2)
-                else:
-                    print("FAILEDDDDDDDDDDDD")
-                    vector_tracker.pop(i)
-                    bboxes.pop(i)
-                    colors.pop(i)
-                    startTime = time.time()
+#    if bboxes != []:
+    if len(bboxes) >= 1:
+        for i, bb in enumerate(bboxes):
+            (success, box) = vector_tracker[i].update(frame)
+            if success:
+                print(i)
+                print("success")
+                (x, y, w, h) = [int(v) for v in box]
+                cv2.rectangle(frame, (x,y), (x+w,y+h), colors[i], 2)
+            else:
+                print("FAILEDDDDDDDDDDDD")
+                vector_tracker.pop(i)
+                bboxes.pop(i)
+                colors.pop(i)
+                startTime = time.time()
 #                    firstFrame = None
                     
                 
@@ -180,6 +184,8 @@ if not args.get("video", False):
 else:
     vs.release()
     
+#time.sleep(10)
+#cv2.waitKey(0)
 cv2.destroyAllWindows()
 cv2.waitKey(1)
             
