@@ -1,5 +1,9 @@
 # USAGE
+<<<<<<< HEAD
 # python yolo_video.py --input videos/airport.mp4 --output output/airport_output.avi --yolo required_files
+=======
+# python yolo_video.py --input videos/airport.mp4 --output output/airport_output.avi --yolo yolo-coco
+>>>>>>> 0f2ec6cdb188498a5df00f82cdbbe63f9ed533d7
 
 # import the necessary packages
 import numpy as np
@@ -15,12 +19,17 @@ ap.add_argument("-i", "--input", required=True,
 	help="path to input video")
 ap.add_argument("-o", "--output", required=True,
 	help="path to output video")
+<<<<<<< HEAD
 ap.add_argument("-y", "--yolo", default="required_files",
+=======
+ap.add_argument("-y", "--yolo", required=True,
+>>>>>>> 0f2ec6cdb188498a5df00f82cdbbe63f9ed533d7
 	help="base path to YOLO directory")
 ap.add_argument("-c", "--confidence", type=float, default=0.5,
 	help="minimum probability to filter weak detections")
 ap.add_argument("-t", "--threshold", type=float, default=0.3,
 	help="threshold when applyong non-maxima suppression")
+<<<<<<< HEAD
 ap.add_argument("-l", "--label", default="coco.names",
     help="COCO class labels for the YOLO model that was trained on")
 ap.add_argument("-w", "--weight", default="yolov3.weights",
@@ -33,16 +42,34 @@ LABELS = open(labelsPath).read().strip().split("\n")
 
 # initialize a list of colors to represent each possible class label
 np.random.seed(606)
+=======
+args = vars(ap.parse_args())
+
+# load the COCO class labels our YOLO model was trained on
+labelsPath = os.path.sep.join([args["yolo"], "coco.names"])
+LABELS = open(labelsPath).read().strip().split("\n")
+
+# initialize a list of colors to represent each possible class label
+np.random.seed(42)
+>>>>>>> 0f2ec6cdb188498a5df00f82cdbbe63f9ed533d7
 COLORS = np.random.randint(0, 255, size=(len(LABELS), 3),
 	dtype="uint8")
 
 # derive the paths to the YOLO weights and model configuration
+<<<<<<< HEAD
 weightsPath = os.path.sep.join([args["yolo"], args["weight"]])
+=======
+weightsPath = os.path.sep.join([args["yolo"], "yolov3.weights"])
+>>>>>>> 0f2ec6cdb188498a5df00f82cdbbe63f9ed533d7
 configPath = os.path.sep.join([args["yolo"], "yolov3.cfg"])
 
 # load our YOLO object detector trained on COCO dataset (80 classes)
 # and determine only the *output* layer names that we need from YOLO
+<<<<<<< HEAD
 print("[NOTE] loading YOLO from disk...")
+=======
+print("[INFO] loading YOLO from disk...")
+>>>>>>> 0f2ec6cdb188498a5df00f82cdbbe63f9ed533d7
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 ln = net.getLayerNames()
 ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]

@@ -59,7 +59,11 @@ while True:
     # the performance of the object detection is related with the frame size set by the opencv model.
     # Decreasing frame size is saving the computation, thus having better performance in better detecting speed.
     # after tuning parameters, 300 seems to have the best performance
+<<<<<<< HEAD
     frame = imutils.resize(frame, width=500)
+=======
+    frame = imutils.resize(frame, width=300)
+>>>>>>> 0f2ec6cdb188498a5df00f82cdbbe63f9ed533d7
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (21, 21), 0)
     
@@ -81,7 +85,11 @@ while True:
             continue
         
         (x, y, w, h) = cv2.boundingRect(c)
+<<<<<<< HEAD
         a = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+=======
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+>>>>>>> 0f2ec6cdb188498a5df00f82cdbbe63f9ed533d7
         text = "Occupied"
         
     # draw the text and timestamp on the frame
