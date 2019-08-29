@@ -109,8 +109,8 @@ while True:
                 continue
             
             (x, y, w, h) = cv2.boundingRect(c)
-            if isInBboxes(x,y,w,h,bboxes):
-                continue
+#            if isInBboxes(x,y,w,h,bboxes):
+#                continue
             bb = (x, y, w, h)
             print(bb)
             bboxes.append(bb)

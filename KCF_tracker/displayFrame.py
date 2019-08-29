@@ -47,9 +47,9 @@ while True:
     if frame is None:
         break
     
-    #resize frame
-    frame = imutils.resize(frame, width=500)
-    (H, W) = frame.shape[:2]
+#    #resize frame
+#    frame = imutils.resize(frame, width=500)
+#    (H, W) = frame.shape[:2]
 #    
 #    if initBB is not None:
 #        (success, box) = tracker.update(frame)
@@ -80,6 +80,6 @@ while True:
 #    vs.release()
     
 cv2.destroyAllWindows()
-#cv2.waitKey(1)
+cv2.waitKey(1)
             
             

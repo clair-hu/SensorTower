@@ -15,8 +15,8 @@ import argparse
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--input", required=True,
-	help="path to input video")
+ap.add_argument("-v", "--video", type=str,
+    help="path to input video file")
 #ap.add_argument("-o", "--output", required=True,
 #	help="path to output video")
 ap.add_argument("-t", "--tracker", default="KCF",
@@ -26,7 +26,7 @@ ap.add_argument("-t", "--tracker", default="KCF",
 args = vars(ap.parse_args())
 
 trackerType = args["tracker"]
-videoPath = args["input"]
+videoPath = args["video"]
 
 # Create a video capture object to read videos
 videoCapture = cv2.VideoCapture(videoPath)

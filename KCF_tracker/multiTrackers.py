@@ -28,6 +28,8 @@ ap.add_argument("-t", "--tracker", type=str, default="kcf",
 	help="OpenCV object tracker type")
 args = vars(ap.parse_args())
 
+
+
 trackers = {
             "kcf": cv2.TrackerKCF_create,
             "boosting": cv2.TrackerBoosting_create,
@@ -73,6 +75,7 @@ while True:
     
     if key == ord("s"):
         bb = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+        print(bb)
         bboxes.append(bb)
         color = (randint(64, 255), randint(64, 255), randint(64, 255))
         colors.append(color)
