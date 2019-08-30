@@ -29,7 +29,8 @@
 
 -   sensor tower
 
-    -   three implementations
+
+## Three implementations
 
         -   on mac
 
