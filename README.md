@@ -30,7 +30,9 @@
 -   sensor tower
 
 
-## Three implementations
+-   Develepment flow
+
+    -   three implementations
 
         -   on mac
 
